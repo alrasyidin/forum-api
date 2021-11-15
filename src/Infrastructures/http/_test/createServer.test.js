@@ -55,6 +55,7 @@ describe('HTTP server', () => {
 
     expect(response.statusCode).toEqual(401);
   });
+
   it('should handle login correctly', async () => {
     const requestPayload = {
       title: 'test',
@@ -72,7 +73,10 @@ describe('HTTP server', () => {
       },
     });
     expect(accessToken).toBeDefined();
+    console.log(response);
+    console.log(response.payload);
     const responseJson = JSON.parse(response.payload);
+    console.log(responseJson);
     expect(response.statusCode).toEqual(201);
     expect(responseJson.data.addedThread).toBeDefined();
     expect(responseJson.data.addedThread.title).toEqual(requestPayload.title);
