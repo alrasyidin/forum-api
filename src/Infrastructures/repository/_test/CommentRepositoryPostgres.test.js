@@ -6,12 +6,14 @@ const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper
 const AddedComment = require('../../../Domains/comments/entities/AddedComment');
 const CommentRepositoryPostgres = require('../CommentRepositoryPostgres');
 const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
+const LikesTableTestHelper = require('../../../../tests/LikesTableTestHelper');
 
 describe('CommentRepository Implementation', () => {
   afterEach(async () => {
     await ThreadsTableTestHelper.cleanTable();
     await CommentsTableTestHelper.cleanTable();
     await UsersTableTestHelper.cleanTable();
+    await LikesTableTestHelper.cleanTable();
   });
 
   afterAll(async () => {
@@ -137,6 +139,97 @@ describe('CommentRepository Implementation', () => {
       expect(comments[0]).toHaveProperty('username');
       expect(comments[0]).toHaveProperty('date');
       expect(comments[0]).toHaveProperty('content');
+      expect(comments[0]).toHaveProperty('likeCount');
+    });
+  });
+
+  describe('likeCommentById', () => {
+    it('Should like comment base on id', async () => {
+      const owner = 'user-123';
+
+      const threadId = 'thread-123';
+      const commentId = 'comment-123456';
+      const fakeIdGenerator = () => '123456';
+
+      // action
+      await UsersTableTestHelper.addUser({ id: owner });
+      await ThreadsTableTestHelper.addThread({ id: threadId, owner });
+      await CommentsTableTestHelper.addComment({ id: 'comment-123456' }, owner, threadId);
+
+      const commentRepo = new CommentRepositoryPostgres(pool, fakeIdGenerator);
+
+      const { id } = await commentRepo.likeCommentById({ userId: owner, commentId });
+      const like = await LikesTableTestHelper.findLikesById(id);
+
+      expect(id).toBeDefined();
+      expect(id).toEqual(like[0].id);
+    });
+  });
+
+  describe('unlikeCommentById', () => {
+    it('Should unlike comment base on id', async () => {
+      const owner = 'user-123';
+
+      const threadId = 'thread-123';
+      const commentId = 'comment-123456';
+
+      const fakeIdGenerator = () => '123456';
+
+      // action
+      await UsersTableTestHelper.addUser({ id: owner });
+      await ThreadsTableTestHelper.addThread({ id: threadId, owner });
+      await CommentsTableTestHelper.addComment({ id: commentId }, owner, threadId);
+      await LikesTableTestHelper.addLike({ userId: owner, commentId });
+
+      const commentRepo = new CommentRepositoryPostgres(pool, fakeIdGenerator);
+
+      const { id } = await commentRepo.unlikeCommentById({ userId: owner, commentId });
+
+      const likes = await LikesTableTestHelper.findLikesById(id);
+
+      expect(likes).toHaveLength(0);
+    });
+  });
+
+  describe('checkLikeStatus', () => {
+    it('Should return false if like not exists', async () => {
+      const owner = 'user-123';
+
+      const threadId = 'thread-123';
+      const commentId = 'comment-123456';
+
+      const fakeIdGenerator = () => '123456';
+
+      // action
+      await UsersTableTestHelper.addUser({ id: owner });
+      await ThreadsTableTestHelper.addThread({ id: threadId, owner });
+      await CommentsTableTestHelper.addComment({ id: 'comment-123456' }, owner, threadId);
+
+      const commentRepo = new CommentRepositoryPostgres(pool, fakeIdGenerator);
+
+      const liked = await commentRepo.checkLikeStatus({ commentId, userId: owner });
+
+      expect(liked).toEqual(false);
+    });
+
+    it('Should return true if like exists', async () => {
+      const owner = 'user-123';
+
+      const threadId = 'thread-123';
+      const likeId = 'like-123';
+      const commentId = 'comment-123456';
+      const fakeIdGenerator = () => '123456';
+
+      // action
+      await UsersTableTestHelper.addUser({ id: owner });
+      await ThreadsTableTestHelper.addThread({ id: threadId, owner });
+      await CommentsTableTestHelper.addComment({ id: commentId }, owner, threadId);
+      await LikesTableTestHelper.addLike({ id: likeId, userId: owner, commentId });
+
+      const commentRepo = new CommentRepositoryPostgres(pool, fakeIdGenerator);
+
+      const liked = await commentRepo.checkLikeStatus({ commentId, userId: owner });
+      expect(liked).toEqual(true);
     });
   });
 });
