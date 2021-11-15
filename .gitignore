@@ -5,3 +5,4 @@ config/database/test.json
 .env
 forum-api.zip
 coverage
+forum-api-server.pem
