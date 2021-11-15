@@ -7,9 +7,9 @@ const LikesTableTestHelper = require('../../../../tests/LikesTableTestHelper');
 
 describe('LikeRepository Implementation', () => {
   afterEach(async () => {
+    await UsersTableTestHelper.cleanTable();
     await ThreadsTableTestHelper.cleanTable();
     await CommentsTableTestHelper.cleanTable();
-    await UsersTableTestHelper.cleanTable();
     await LikesTableTestHelper.cleanTable();
   });
 

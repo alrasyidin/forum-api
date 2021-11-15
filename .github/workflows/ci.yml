@@ -2,7 +2,7 @@ name: Continous Integration Forum Api
 
 on:
   pull_request:
-    branch:
+    branches:
       - master
 
 jobs:

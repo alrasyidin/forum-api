@@ -8,17 +8,17 @@ const LikesTableTestHelper = require('../../../../tests/LikesTableTestHelper');
 
 describe('/threads/{threadId}/comments/{commentId}/likes endpoint', () => {
   afterEach(async () => {
+    await LikesTableTestHelper.cleanTable();
     await CommentsTableTestHelper.cleanTable();
     await ThreadsTableTestHelper.cleanTable();
     await UsersTableTestHelper.cleanTable();
-    await LikesTableTestHelper.cleanTable();
   });
 
   afterAll(async () => {
     await pool.end();
   });
 
-  describe('when PUT /threads/{threadId}/comments/{commentId}/likes', () => {
+  describe('when PUT /threads/{threadId}/comments/{commentId}/likes for like', () => {
     it('Should return 200 and like comment', async () => {
       const owner = 'user-123';
       const threadId = 'thread-123';
@@ -51,6 +51,9 @@ describe('/threads/{threadId}/comments/{commentId}/likes endpoint', () => {
       expect(response.statusCode).toEqual(200);
       expect(responseJson.status).toBe('success');
     });
+  });
+
+  describe('when PUT /threads/{threadId}/comments/{commentId}/likes for unlike', () => {
     it('Should return 200 and unlike comment', async () => {
       const owner = 'user-123';
       const threadId = 'thread-123';
@@ -65,7 +68,8 @@ describe('/threads/{threadId}/comments/{commentId}/likes endpoint', () => {
 
       await ThreadsTableTestHelper.addThread({ id: threadId });
       await CommentsTableTestHelper.addComment({ id: commentId }, owner, threadId);
-      await LikesTableTestHelper.addLike({ id: likeId, commentId, userId: owner });
+      await LikesTableTestHelper.addLike({ id: likeId, userId: owner, commentId });
+
       const server = await createServer(container);
 
       const response = await server.inject({
