@@ -9,10 +9,10 @@ const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 
 describe('ReplyRepository Implementation', () => {
   afterEach(async () => {
+    await UsersTableTestHelper.cleanTable();
     await ThreadsTableTestHelper.cleanTable();
     await CommentsTableTestHelper.cleanTable();
     await RepliesTableTestHelper.cleanTable();
-    await UsersTableTestHelper.cleanTable();
   });
 
   afterAll(async () => {

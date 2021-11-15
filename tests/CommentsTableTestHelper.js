@@ -22,7 +22,7 @@ const CommentsTableTestHelper = {
   },
 
   async cleanTable() {
-    await pool.query('DELETE FROM comments WHERE 1=1');
+    await pool.query(`TRUNCATE TABLE comments CASCADE`);
   },
 
   async checkCommentWasDeleted(id) {

@@ -55,6 +55,7 @@ describe('HTTP server', () => {
 
     expect(response.statusCode).toEqual(401);
   });
+
   it('should handle login correctly', async () => {
     const requestPayload = {
       title: 'test',

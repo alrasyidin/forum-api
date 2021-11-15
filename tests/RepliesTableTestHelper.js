@@ -22,7 +22,7 @@ const RepliesTableTestHelper = {
   },
 
   async cleanTable() {
-    await pool.query('DELETE FROM replies WHERE 1=1');
+    await pool.query(`TRUNCATE TABLE replies CASCADE`);
   },
 
   async checkReplyWasDeleted(id) {
