@@ -20,6 +20,16 @@ const LikesTableTestHelper = {
     return result.rows;
   },
 
+  async findLikesByCommentAndOwner(commentId, userId) {
+    const query = {
+      text: 'SELECT * FROM likes WHERE id_comments = $1 AND id_users = $2 LIMIT 1',
+      values: [commentId, userId],
+    };
+
+    const result = await pool.query(query);
+    return result.rows;
+  },
+
   async cleanTable() {
     await pool.query('DELETE FROM likes WHERE 1=1');
   },
