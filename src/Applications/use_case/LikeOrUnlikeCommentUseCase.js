@@ -12,9 +12,9 @@ class LikeOrUnlikeCommentUseCase {
     const isLiked = await this._likeRepository.checkLikeStatus({ commentId, userId });
 
     if (!isLiked) {
-      this._likeRepository.likeCommentById({ userId, commentId });
+      await this._likeRepository.likeCommentById({ userId, commentId });
     } else {
-      this._likeRepository.unlikeCommentById({ userId, commentId });
+      await this._likeRepository.unlikeCommentById({ userId, commentId });
     }
   }
 }

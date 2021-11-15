@@ -60,12 +60,7 @@ describe('/threads/{threadId}/comments/{commentId}/likes endpoint', () => {
       const commentId = 'comment-123456';
       const likeId = 'like-123456';
 
-      await UsersTableTestHelper.addUser({
-        id: owner,
-        username: 'user',
-        password: 'password',
-      });
-
+      await UsersTableTestHelper.addUser({ id: owner, username: 'user', password: 'password' });
       await ThreadsTableTestHelper.addThread({ id: threadId });
       await CommentsTableTestHelper.addComment({ id: commentId }, owner, threadId);
       await LikesTableTestHelper.addLike({ id: likeId, userId: owner, commentId });
