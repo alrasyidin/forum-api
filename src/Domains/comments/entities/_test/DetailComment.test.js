@@ -19,6 +19,7 @@ describe('DetailComment entities', () => {
       content: 12312,
       username: [],
       date: true,
+      likeCount: 'test',
       isDelete: 'test',
     };
 
@@ -34,6 +35,7 @@ describe('DetailComment entities', () => {
         'Clean Code adalah kode di dalam perangkat lunak (software) yang formatnya benar dan disusun dengan baik.',
       username: 'user-123',
       date: '2021-11-06T00:41:01.922Z',
+      likeCount: 2,
       isDelete: false,
     };
 
@@ -50,6 +52,8 @@ describe('DetailComment entities', () => {
     expect(detailComment.username).toEqual(payload.username);
     expect(detailComment).toHaveProperty('date');
     expect(detailComment.date).toEqual(payload.date);
+    expect(detailComment).toHaveProperty('likeCount');
+    expect(detailComment.likeCount).toEqual(payload.likeCount);
   });
 
   it('Should create detail comment object correctly when is_delete true', () => {
@@ -60,6 +64,7 @@ describe('DetailComment entities', () => {
         'Clean Code adalah kode di dalam perangkat lunak (software) yang formatnya benar dan disusun dengan baik.',
       username: 'user-123',
       date: '2021-11-06T00:41:01.922Z',
+      likeCount: 5,
       isDelete: true,
     };
 
@@ -76,5 +81,7 @@ describe('DetailComment entities', () => {
     expect(detailComment.username).toEqual(payload.username);
     expect(detailComment).toHaveProperty('date');
     expect(detailComment.date).toEqual(payload.date);
+    expect(detailComment).toHaveProperty('likeCount');
+    expect(detailComment.likeCount).toEqual(payload.likeCount);
   });
 });

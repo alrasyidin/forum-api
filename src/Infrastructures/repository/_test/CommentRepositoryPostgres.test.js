@@ -6,12 +6,14 @@ const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper
 const AddedComment = require('../../../Domains/comments/entities/AddedComment');
 const CommentRepositoryPostgres = require('../CommentRepositoryPostgres');
 const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
+const LikesTableTestHelper = require('../../../../tests/LikesTableTestHelper');
 
 describe('CommentRepository Implementation', () => {
   afterEach(async () => {
     await ThreadsTableTestHelper.cleanTable();
     await CommentsTableTestHelper.cleanTable();
     await UsersTableTestHelper.cleanTable();
+    await LikesTableTestHelper.cleanTable();
   });
 
   afterAll(async () => {
@@ -137,6 +139,7 @@ describe('CommentRepository Implementation', () => {
       expect(comments[0]).toHaveProperty('username');
       expect(comments[0]).toHaveProperty('date');
       expect(comments[0]).toHaveProperty('content');
+      expect(comments[0]).toHaveProperty('likeCount');
     });
   });
 });
