@@ -81,6 +81,7 @@ describe('/threads endpoint', () => {
       expect(thread.body).toBeDefined();
       expect(thread.date).toBeDefined();
       expect(thread.username).toBeDefined();
+      expect(thread.likeCount).toBeDefined();
       expect(thread.comments).toBeDefined();
       expect(thread.comments).toHaveLength(1);
       expect(thread.comments[0].replies).toBeDefined();
