@@ -1,4 +1,5 @@
 const CommentRepository = require('../../../Domains/comments/CommentRepository');
+const LikeRepository = require('../../../Domains/likes/LikeRepository');
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const LikeOrUnlikeCommentUseCase = require('../LikeOrUnlikeCommentUseCase');
 
@@ -11,23 +12,25 @@ describe('LikeOrUnlikeCommentUseCase', () => {
 
     const mockCommentRepo = new CommentRepository();
     const mockThreadRepo = new ThreadRepository();
+    const mockLikeRepo = new LikeRepository();
 
-    mockCommentRepo.likeCommentById = jest.fn().mockImplementation(() => Promise.resolve(likeId));
-    mockCommentRepo.checkLikeStatus = jest.fn().mockImplementation(() => Promise.resolve(false));
+    mockLikeRepo.likeCommentById = jest.fn().mockImplementation(() => Promise.resolve(likeId));
+    mockLikeRepo.checkLikeStatus = jest.fn().mockImplementation(() => Promise.resolve(false));
     mockCommentRepo.getOwnerByCommentId = jest.fn().mockImplementation(() => Promise.resolve({ owner }));
     mockThreadRepo.getThreadById = jest.fn().mockImplementation(() => Promise.resolve());
 
     const likeOrUnlikeCommentUseCase = new LikeOrUnlikeCommentUseCase({
       threadRepository: mockThreadRepo,
       commentRepository: mockCommentRepo,
+      likeRepository: mockLikeRepo,
     });
 
     await likeOrUnlikeCommentUseCase.execute({ commentId, threadId, userId: owner });
 
     expect(mockThreadRepo.getThreadById).toBeCalledWith(threadId);
     expect(mockCommentRepo.getOwnerByCommentId).toBeCalledWith(commentId);
-    expect(mockCommentRepo.checkLikeStatus).toBeCalledWith({ commentId, userId: owner });
-    expect(mockCommentRepo.likeCommentById).toBeCalledWith({ commentId, userId: owner });
+    expect(mockLikeRepo.checkLikeStatus).toBeCalledWith({ commentId, userId: owner });
+    expect(mockLikeRepo.likeCommentById).toBeCalledWith({ commentId, userId: owner });
   });
 
   it('Should oscrestrating the unlike comment correctly if like exist', async () => {
@@ -38,22 +41,24 @@ describe('LikeOrUnlikeCommentUseCase', () => {
 
     const mockCommentRepo = new CommentRepository();
     const mockThreadRepo = new ThreadRepository();
+    const mockLikeRepo = new LikeRepository();
 
-    mockCommentRepo.unlikeCommentById = jest.fn().mockImplementation(() => Promise.resolve(likeId));
-    mockCommentRepo.checkLikeStatus = jest.fn().mockImplementation(() => Promise.resolve(true));
+    mockLikeRepo.unlikeCommentById = jest.fn().mockImplementation(() => Promise.resolve(likeId));
+    mockLikeRepo.checkLikeStatus = jest.fn().mockImplementation(() => Promise.resolve(true));
     mockCommentRepo.getOwnerByCommentId = jest.fn().mockImplementation(() => Promise.resolve({ owner }));
     mockThreadRepo.getThreadById = jest.fn().mockImplementation(() => Promise.resolve());
 
     const likeOrUnlikeCommentUseCase = new LikeOrUnlikeCommentUseCase({
       threadRepository: mockThreadRepo,
       commentRepository: mockCommentRepo,
+      likeRepository: mockLikeRepo,
     });
 
     await likeOrUnlikeCommentUseCase.execute({ commentId, threadId, userId: owner });
 
     expect(mockThreadRepo.getThreadById).toBeCalledWith(threadId);
     expect(mockCommentRepo.getOwnerByCommentId).toBeCalledWith(commentId);
-    expect(mockCommentRepo.checkLikeStatus).toBeCalledWith({ commentId, userId: owner });
-    expect(mockCommentRepo.unlikeCommentById).toBeCalledWith({ commentId, userId: owner });
+    expect(mockLikeRepo.checkLikeStatus).toBeCalledWith({ commentId, userId: owner });
+    expect(mockLikeRepo.unlikeCommentById).toBeCalledWith({ commentId, userId: owner });
   });
 });
